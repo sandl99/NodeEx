@@ -6,8 +6,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const {startDatabase} = require('./database/mongo');
-const {insertAd, getAds, updateAd, deleteAd} = require('./database/ads');
+const auth = require('./controllers/auth.controller')
 
 // defining the Express app
 const app = express();
@@ -36,9 +35,15 @@ app.get('/', async (req, res) => {
   
 app.post('/', async (req, res) => {
   const newAd = req.body;
-  await insertAd(newAd);
+  
   res.send({ message: 'New ad inserted.' });
 });	
+
+app.post('/signin', (req, res) => {
+    const newAd = req.body;
+    await insertAd(newAd);
+    res.send({ message: 'New ad inserted.' });
+  });	
 
 // endpoint to delete an ad
 app.delete('/:id', async (req, res) => {
