@@ -9,7 +9,7 @@ exports.config = {
         (process.env.IP || "localhost") +
         ":" +
         (process.env.MONGO_PORT || "27017") +
-        "/mernproject"
+        "/IotDB"
   };
 
 
