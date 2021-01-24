@@ -17,12 +17,11 @@ const showAll = (req, res, next) => {
 
 // show single Sensor
 const showByID = (req, res, next) => {
-    let _id = req.body._id
+    let _id = req.query._id
     Sensor.findById(_id)
-    .then(response => {
-        res.json({
-            response
-        })
+    .then(sensor => {
+        res.locals.sensor = sensor
+        next()
     })
     .catch(error => {
         res.json({
@@ -34,11 +33,10 @@ const showByID = (req, res, next) => {
 
 // show Sensor by userID
 const showByUserID = (req, res, next) => {
-    Sensor.find({userID: req.body.userID})
-    .then(response => {
-        res.json({
-            response
-        })
+    Sensor.find({userID: req.query.userID})
+    .then(sensor => {
+        res.locals.sensor = sensor
+        next()
     })
     .catch(error => {
         res.json({
@@ -58,12 +56,12 @@ const store = (req, res, next) => {
 
     sensor.save()
     .then(response => {
-        res.json({
+        res.status(200).json({
             message: 'Sensor Added Successfully!' 
         })
     })
     .catch(error => {
-        res.json({
+        res.status(405).json({
             message: 'An error occured!'
         })
     })
@@ -97,12 +95,12 @@ const destroyByID = (req, res, next) => {
     let _id = req.body._id
     Sensor.findByIdAndRemove(_id)
     .then(() => {
-        res.json({
+        res.status(200).json({
             message: 'Sensor delete successfully'
         })
     })
     .catch(error => {
-        res.json({
+        res.status(405).json({
             message: 'An error occured!'
         })
     })

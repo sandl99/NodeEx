@@ -4,25 +4,23 @@ const Device = require('../../models/Device')
 const showAll = (req, res, next) => {
     Device.find()
     .then(response => {
-        res.json({
-            response
-        })
+        req.allDevice = response
     })
     .catch(err => {
         res.json({
             message: 'An error occured!'
         })
     })
+    next()
 }
 
 // show single Device
 const showByID = (req, res, next) => {
-    let _id = req.body._id
+    let _id = req.query._id
     Device.findById(_id)
-    .then(response => {
-        res.json({
-            response
-        })
+    .then(device => {
+        res.locals.device = device
+        next();
     })
     .catch(error => {
         res.json({
@@ -34,17 +32,19 @@ const showByID = (req, res, next) => {
 
 // show Device by userID
 const showByUserID = (req, res, next) => {
-    Device.find({userID: req.body.userID})
+    console.log('dcm')
+    Device.find({userID: req.query.userID})
     .then(response => {
-        res.json({
-            response
-        })
+        res.locals.device = response
+        
+        next()
     })
     .catch(error => {
         res.json({
             message: 'An error occured!'
         })
     })
+    
 }
 
 
@@ -56,55 +56,57 @@ const store = (req, res, next) => {
         type: req.body.type,
         status: req.body.status
     })
-
     device.save()
     .then(response => {
-        res.json({
+        res.status(200).json({
             message: 'Device Added Successfully!' 
         })
+        next()
     })
     .catch(error => {
-        res.json({
+        res.status(405).json({
             message: 'An error occured!'
         })
     })
+    
 }
 
 // update an Device
 const updateByID = (req, res, next) => {
     let _id = req.body._id
-
+    console.log('san')
     let updateData = {
-        _id: req.body._id,
-        userID: req.body.userID,
-        type: req.body.type,
         status: req.body.status
     }
-
+    
+    console.log(updateData)
     Device.findByIdAndUpdate(_id, {$set: updateData})
     .then(() => {
-        res.json({
+        res.status(200).json({
             message: 'Device updated Successfully!'
         })
+        next()
     })
     .catch(error => {
-        res.json({
+        res.status(405).json({
             message: 'An erorr occured!'
         }) 
     })
+    
 }
 
 // delete an Device
 const destroyByID = (req, res, next) => {
     let _id = req.body._id
+    console.log(_id)
     Device.findByIdAndRemove(_id)
     .then(() => {
-        res.json({
+        res.status(200).json({
             message: 'Device delete successfully'
         })
     })
     .catch(error => {
-        res.json({
+        res.status(405).json({
             message: 'An error occured!'
         })
     })

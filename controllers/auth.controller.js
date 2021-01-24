@@ -6,40 +6,36 @@ const User = require('../models/user')
 
 const signin = (req, res) => {
 	User.find(
-		{
-			username: req.body.username
-		}, 
+	{username: req.body.username}, 
 	(err, users) => {
-		console.log(users)
-		if (err || !users) {
+		let user = users[0]
+		console.log(user)
+		if (err || !user) {
 			res.status("401").json({
 				error: "Incorrect username"
 			})
-			res.end()
 		}
-		let user = users[0]
-		if (user.password != req.body.password) {
+		else if (!req.body.password || user.password != req.body.password) {
 			res.status("401").json({
 				error: "Incorrect password"
 			})
-			res.end()
+		} else {
+			const token = jwt.sign(
+				{
+					_id : user._id
+				},
+				jwtSecret
+			);
+			res.cookie ("cookie", token, {
+				expire: new Date() + 999
+			});
+			res.json({
+				token,
+				user: {_id: user._id, username: user.username}
+			});
 		}
-		const token = jwt.sign(
-            {
-                _id : user._id
-            },
-            jwtSecret
-        );
-        res.cookie ("cookie", token, {
-            expire: new Date() + 999
-		});
-		console.log('abc')
-        res.json({
-            token,
-            user: {_id: user._id, username: user.username, password: user.password}
-        });
-	});
-};
+	})
+}
 
 const signout = (req, res) => {
     res.clearCookie("cookie");
@@ -55,13 +51,16 @@ const requireSignin = expressJwt({
 });
   
 const hasAuthorization = (req, res, next) => {
-	const authorized = req.user && req.auth && req.user._id == req.auth._id;
+	const authorized = req.auth && req.body._id == req.auth._id;
+	console.log(req.body)
+	console.log(req.auth)
 	if (!authorized) {
 		return res.status("403").json({
 		error: "User is not authorized"
 		});
+	} else {
+		res.status(200).json({message: "User is authorized"})
 	}
-	next();
 };
   
 module.exports = {signin, signout, requireSignin, hasAuthorization};

@@ -7,8 +7,11 @@ const sensorDataSchema = new Schema({
     },
     value: {
         type: Number
+    }, 
+    createAt: {
+        type: Date
     }
-}, {timestamps: true})
+}, {timestamps: false})
 
 const SensorData = mongoose.model('SensorData', sensorDataSchema)
 module.exports = SensorData

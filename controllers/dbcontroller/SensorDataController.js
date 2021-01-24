@@ -10,22 +10,22 @@ const showAll = (req, res, next) => {
     })
     .catch(err => {
         res.json({
-            message: 'An error occured!'
+            error: 'An error occured!'
         })
     })
 }
 
-// show SensorData by sensorID
+// show lastest SensorData by sensorID 
 const showBySensorID = (req, res, next) => {
-    SensorData.find({sensorID: req.body.sensorID})
+    SensorData.findOne(
+        {sensorID: req.query.sensorID}, 
+        { sort: { 'createAt' : 1 } })
     .then(response => {
-        res.json({
-            response
-        })
+        res.labels.data = response
     })
     .catch(error => {
         res.json({
-            message: 'An error occured!'
+            error: 'An error occured!'
         })
     })
 }
@@ -34,7 +34,8 @@ const showBySensorID = (req, res, next) => {
 const store = (req, res, next) => {
     let sensorData = new SensorData({
         sensorID: req.body.sensorID,
-        value: req.body.value
+        value: req.body.value,
+        createAt: new Date(req.body.createAt)
     })
 
     sensorData.save()
@@ -42,10 +43,11 @@ const store = (req, res, next) => {
         res.json({
             message: 'SensorData Added Successfully!' 
         })
+        next()
     })
     .catch(error => {
         res.json({
-            message: 'An error occured!'
+            error: 'An error occured!'
         })
     })
 }
