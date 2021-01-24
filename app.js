@@ -12,7 +12,7 @@ var mongoose = require("mongoose");
 const deviceRouter = require("./routes/device.routes")
 const authRouter = require("./routes/auth.routes")
 const sensorRouter = require("./routes/sensor.routes")
-const sensordataRouter = require("./routes/sensordata.routes")
+// const sensordataRouter = require("./routes/sensordata.routes")
 
 const mongoUrl = config.config.mongoUri;
 

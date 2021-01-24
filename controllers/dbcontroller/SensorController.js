@@ -51,7 +51,8 @@ const store = (req, res, next) => {
     let sensor = new Sensor({
         _id: req.body._id,
         userID: req.body.userID,
-        type: req.body.type
+        type: req.body.type,
+        createdAt: new Date(req.body.timestamp)
     })
 
     sensor.save()

@@ -8,7 +8,7 @@ const sensorDataSchema = new Schema({
     value: {
         type: Number
     }, 
-    createAt: {
+    createdAt: {
         type: Date
     }
 }, {timestamps: false})
