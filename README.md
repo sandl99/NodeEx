@@ -1,3 +1,3 @@
-`npm install body-parser cors express helmet morgan`
+`npm install`
 
-`npm i mongodb-memory-server mongodb`
+`npm start`
